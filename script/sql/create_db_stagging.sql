@@ -20,7 +20,7 @@ CREATE TABLE date_dim (
     id INTEGER AUTO_INCREMENT primary key,
     day INTEGER not null,
     month INTEGER not null,
-    year INTEGER not null
+    year INTEGER not null,
 );
 /*
 create table time dim
@@ -68,6 +68,12 @@ CREATE TABLE status_dim (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     name_status VARCHAR(25)
 );
+/*create table reference dim*/
+CREATE TABLE reference_dim (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    name_reference VARCHAR(25),
+    nation varchar(50)
+);
 /*
 create table result football (fact)
 */
@@ -79,13 +85,13 @@ CREATE TABLE result_football (
     id_time_start integer default null,
     id_home_team integer not null,
     id_away_team integer not null,
+    id_reference integer not null,
     id_venue integer default null,
     id_round integer default null,
-    id_status integer default null,
-    id_time_available integer default 0,
-    id_date_available integer default 0,
-    isDelete boolean default false
+    id_status integer default null
 );
+/* add foreign key*/
+alter table result_football add foreign key (id_reference) references league_dim(id);
 alter table result_football add foreign key (id_league) references league_dim(id);
 alter table result_football add foreign key (id_date_start) references date_dim(id);
 alter table result_football add foreign key (id_time_start) references time_dim(id);
@@ -93,8 +99,6 @@ alter table result_football add foreign key (id_home_team) references team_dim(i
 alter table result_football add foreign key (id_away_team) references team_dim(id);
 alter table result_football add foreign key (id_venue) references venue_dim(id);
 alter table result_football add foreign key (id_round) references round_dim(id);
-alter table result_football add foreign key (id_time_available) references time_dim(id);
-alter table result_football add foreign key (id_date_available) references date_dim(id); 
 alter table result_football add foreign key (id_status) references status_dim(id);
 
 load data infile "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/all_edited.csv" 
