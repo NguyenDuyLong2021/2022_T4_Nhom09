@@ -50,3 +50,19 @@ goal_away_team, referee, venue, attendance, round, status ) select * from staggi
 delete from stagging_result_football.result_football;
 
 delete from venue_dim 
+
+insert into stagging_result_football.date_dim (day, month, year)  select distinct day(match_day), month(match_day), year(match_day) from stagging_result_football.snapshot_result;
+insert into stagging_result_football.time_dim (hour, miniute, second)  select distinct hour(time_start), minute(time_start), second(time_start) from stagging_result_football.snapshot_result;
+insert into stagging_result_football.league_dim (name_league)  select distinct name_league from stagging_result_football.snapshot_result;
+insert into stagging_result_football.round_dim (name_round)  select distinct round from stagging_result_football.snapshot_result;
+insert into stagging_result_football.status_dim (name_status)  select distinct status from stagging_result_football.snapshot_result;
+insert into stagging_result_football.team_dim (name_team)  select distinct home_team and away_team from stagging_result_football.snapshot_result;
+
+set @isExits = (select (exists (select day, month, year from dw_result_football.date_dim)));
+select count(id) from dw_result_football.date_dim ;
+
+select @isExits;
+insert into stagging_result_football.date_dim (id,day, month, year) select * from dw_result_football.date_dim;
+
+set @length = (select distinct day(match_day), month(match_day), year(match_day) from stagging_result_football.snapshot_result);
+select @length

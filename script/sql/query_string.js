@@ -1,3 +1,8 @@
+require("dotenv").config({ path: "../../.env" });
+//check exits record
+const checkStatus = (status) =>
+  `select id from control_db.scraping_log where status ='${status}'`;
+exports.checkStatus = checkStatus;
 //string query get config
 const queryGetConfigPE = (year_leagues, full_name) => {
   return `SELECT 
@@ -33,8 +38,8 @@ const getBranchPEM = (name_branch) =>
   `select branch from branch_source_name where name_branch = "${name_branch}" `;
 exports.getBranchPEM = getBranchPEM;
 //string query insert log into database
-const insertLog = (id_config, file_name, date_log) => {
-  return `insert into scraping_log (id_config, file_name, date_log) values(${id_config}, "${file_name}", "${date_log}")`;
+const insertLog = (id_config, file_name, date_log, status) => {
+  return `insert into scraping_log (id_config, file_name, date_log, status) values(${id_config}, "${file_name}", "${date_log}", "${status}")`;
 };
 exports.insertLog = insertLog;
 //string query load record from intermediary stagging to main database
@@ -43,11 +48,10 @@ const loadRecordToDatabase =
   goal_away_team, referee, venue, attendance, round, status ) select * from stagging_result_football.result_football`;
 exports.loadRecordToDatabase = loadRecordToDatabase;
 //string load record from csv file to stagging
-const loadRecordToStagging =
- (
+const loadRecordToStagging = (
   nameFile
-) => `load data infile "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/${nameFile}" 
-into table stagging_result_football.result_football fields terminated by ","  lines terminated by "\n" ignore 1 rows 
+) => `load data infile "${process.env.PATH_DES_LOAD}${nameFile}" 
+into table ${process.env.DATABASE2}.snapshot_result fields terminated by ","  lines terminated by "\n" ignore 1 rows 
 (@id_match, @name_league, @home_team, @away_team, @time_start,
 @match_day, @goal_home_team, @goal_away_team, @referee, @venue, @attendance, @round, @status) 
 set id_match= if(@id_match='', 'unknown',@id_match )
@@ -71,6 +75,43 @@ exports.loadLogFile = loadLogFile;
 const deleteRecords = "delete from stagging_result_football.result_football";
 exports.deleteRecords = deleteRecords;
 const updateStatusSrapinglog = (newStatus, file_name) =>
-  `update dw_result_football.scraping_log set status=${newStatus} where file_name = '${file_name}'`;
+  `update ${process.env.DATABASE1}.scraping_log set status='${newStatus}' where file_name = '${file_name}'`;
 exports.updateStatusSrapinglog = updateStatusSrapinglog;
+const getListNameFile = () =>
+  `select file_name from ${process.env.DATABASE1}.scraping_log where status = '${process.env.EXTRACT_START}'`;
+exports.getListNameFile = getListNameFile;
+const getListTablesTrancate = `SELECT
+concat('Truncate table ',TABLE_NAME, ";") as command
+FROM
+information_schema.tables
+WHERE
+table_schema = "${process.env.DATABASE2}";`;
+exports.getListTablesTrancate = getListTablesTrancate;
+//transfer data to date dim
+const transferDataDateDim1 =
+  () => `insert into ${process.env.DATABASE2}.date_dim (day, month, year)  select distinct day(match_day), month(match_day), year(match_day) from ${process.env.DATABASE2}.snapshot_result;
+`;
+exports.transferDataDateDim1 = transferDataDateDim1;
+//transfer data to time dim
+const transferDataTimeDim1 = `insert into ${process.env.DATABASE2}.time_dim (hour, miniute, second)  select distinct hour(time_start), minute(time_start), second(time_start) from ${process.env.DATABASE2}.snapshot_result;
+`;
+exports.transferDataTimeDim1 = transferDataTimeDim1;
+//transfer data to league dim
+const transferDataLeagueDim1 = `insert into ${process.env.DATABASE2}.league_dim (name_league)  select distinct name_league from ${process.env.DATABASE2}.snapshot_result;
+`;
+exports.transferDataLeagueDim1 = transferDataLeagueDim1;
+//transfer data to round dim
+const transferDataRoundDim1 = `insert into ${process.env.DATABASE2}.round_dim (name_round)  select distinct round from ${process.env.DATABASE2}.snapshot_result;
+`;
+exports.transferDataRoundDim1 = transferDataRoundDim1;
+//transfer data to status dim
+const transferDataStatusDim1 = `insert into ${process.env.DATABASE2}.status_dim (name_status)  select distinct status from ${process.env.DATABASE2}.snapshot_result;
+`;
+exports.transferDataStatusDim1 = transferDataStatusDim1;
+//transfer data to team dim
+const transferDataTeamDim1 = `insert into ${process.env.DATABASE2}.team_dim(name_team) select distinct home_team as team from ${process.env.DATABASE2}.snapshot_result union select distinct away_team as team from ${process.env.DATABASE2}.snapshot_result ;`;
+exports.transferDataTeamDim1 = transferDataTeamDim1;
 
+//transfer data to venue dim
+const transferDatavenueDim1 = `insert into ${process.env.DATABASE2}.team_dim(name_team) select distinct home_team as team from ${process.env.DATABASE2}.snapshot_result union select distinct away_team as team from ${process.env.DATABASE2}.snapshot_result ;`;
+exports.transferDatavenueDim1 = transferDatavenueDim1;

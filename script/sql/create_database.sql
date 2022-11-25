@@ -78,6 +78,12 @@ CREATE TABLE status_dim (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     name_status VARCHAR(25)
 );
+/*create table reference dim*/
+CREATE TABLE reference_dim (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    name_reference VARCHAR(25),
+    nation varchar(50)
+);
 /*
 create table result football (fact)
 */
@@ -89,6 +95,7 @@ CREATE TABLE result_football (
     id_time_start integer default null,
     id_home_team integer not null,
     id_away_team integer not null,
+    id_reference integer not null,
     id_venue integer default null,
     id_round integer default null,
     id_status integer default null,
@@ -101,6 +108,7 @@ alter table result_football add foreign key (id_date_start) references date_dim(
 alter table result_football add foreign key (id_time_start) references time_dim(id);
 alter table result_football add foreign key (id_home_team) references team_dim(id);
 alter table result_football add foreign key (id_away_team) references team_dim(id);
+alter table result_football add foreign key (id_reference) references league_dim(id);
 alter table result_football add foreign key (id_venue) references venue_dim(id);
 alter table result_football add foreign key (id_round) references round_dim(id);
 alter table result_football add foreign key (id_time_available) references time_dim(id);
@@ -139,7 +147,7 @@ CREATE TABLE scraping_log (
     id_config INTEGER not null,
     file_name VARCHAR(100) not null,
     date_log DATEtime default now(),
-    status INTEGER default 0
+    status char default null 
 );
 
 /*create table contactor: contactor who is responsible*/
