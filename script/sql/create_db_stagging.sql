@@ -20,7 +20,7 @@ CREATE TABLE date_dim (
     id INTEGER AUTO_INCREMENT primary key,
     day INTEGER not null,
     month INTEGER not null,
-    year INTEGER not null,
+    year INTEGER not null
 );
 /*
 create table time dim
@@ -71,7 +71,7 @@ CREATE TABLE status_dim (
 /*create table reference dim*/
 CREATE TABLE reference_dim (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name_reference VARCHAR(25),
+    name_reference VARCHAR(50),
     nation varchar(50)
 );
 /*
@@ -91,7 +91,7 @@ CREATE TABLE result_football (
     id_status integer default null
 );
 /* add foreign key*/
-alter table result_football add foreign key (id_reference) references league_dim(id);
+alter table result_football add foreign key (id_reference) references reference_dim(id);
 alter table result_football add foreign key (id_league) references league_dim(id);
 alter table result_football add foreign key (id_date_start) references date_dim(id);
 alter table result_football add foreign key (id_time_start) references time_dim(id);

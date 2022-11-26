@@ -26,7 +26,7 @@ venue = nullif(@vvenue, 'unknown'), attendance = nullif(@vattendance, 'unknown')
 delete from result_football;
 
 load data infile "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/all_edited.csv" 
-into table result_football fields terminated by ","  lines terminated by "\n" ignore 1 rows 
+into table snapshot_result fields terminated by ","  lines terminated by "\n" ignore 1 rows 
 (@id_match, @name_league, @home_team, @away_team, @time_start,
 @match_day, @goal_home_team, @goal_away_team, @referee, @venue, @attendance, @round, @status) 
 set id_match= if(@id_match='', 'unknown',@id_match )

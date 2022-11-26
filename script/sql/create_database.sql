@@ -81,7 +81,7 @@ CREATE TABLE status_dim (
 /*create table reference dim*/
 CREATE TABLE reference_dim (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name_reference VARCHAR(25),
+    name_reference VARCHAR(50),
     nation varchar(50)
 );
 /*
@@ -108,7 +108,7 @@ alter table result_football add foreign key (id_date_start) references date_dim(
 alter table result_football add foreign key (id_time_start) references time_dim(id);
 alter table result_football add foreign key (id_home_team) references team_dim(id);
 alter table result_football add foreign key (id_away_team) references team_dim(id);
-alter table result_football add foreign key (id_reference) references league_dim(id);
+alter table result_football add foreign key (id_reference) references reference_dim(id);
 alter table result_football add foreign key (id_venue) references venue_dim(id);
 alter table result_football add foreign key (id_round) references round_dim(id);
 alter table result_football add foreign key (id_time_available) references time_dim(id);
