@@ -3,7 +3,6 @@ const fs = require("fs");
 const stringQuery = require("../../sql/query_string");
 const pool = require("../connection/index");
 const uftf = require("./upload_file_to_ftp");
-const { loadToStagging } = require("../stagging");
 require("dotenv").config({ path: "../../.env" });
 /*
   function scrapingResutByMatch() used to sraping result by the match with paramaster
@@ -22,7 +21,7 @@ const scrapingResutByMatch = async (
   branch,
   ftp,
   user_name,
-  password,
+  password
 ) => {
   const instance = pool.instance;
   const [rows, fiedls] = await instance.query(
@@ -157,7 +156,7 @@ const scrapingResutByMatch = async (
       and if isContinue is false then close browser, scraping new year
       final: all complete then log string "finish"
     */
-    list_result_by_date += `${result.data}\n`;
+    list_result_by_date += `${result.data}`;
     if (result.isContinue) {
       newPage.close();
       scrapingResutByMatch(
@@ -170,7 +169,7 @@ const scrapingResutByMatch = async (
         branch,
         ftp,
         user_name,
-        password,
+        password
       );
     } else {
       console.log("finish all!");

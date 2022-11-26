@@ -12,7 +12,7 @@ const scraping_id_match_by_specfific_day = async (
   const config = await connection.getContentCongig();
   //   const matchDays = date;
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     ignoreHTTPSErrors: true,
   });
   const page = await browser.newPage();
