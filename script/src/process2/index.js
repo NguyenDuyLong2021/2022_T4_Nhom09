@@ -10,7 +10,7 @@ const uld = require("./updateLeagueDim");
 const ured = require("./updateReferenceDim");
 const tdrf = require("./transferDataResultFact");
 const queryString = require("../../sql/query_string");
-const us = require("./updateStatusLog");
+const us = require("../utils/updateStatusLog");
 // const transfer2stagging = require("./transfer2stagging");
 
 (async () => {
@@ -20,11 +20,10 @@ const us = require("./updateStatusLog");
   //   "insert into stagging_result_football.date_dim (day, month, year) values (1,1,1)"
   // );
   const result = await connection.getStatus(process.env.EXTRACT_START);
-  console.log(result);
-  if (result.id > 0) {
+  if (result.id > -1) {
     //  transfer2stagging.loadToStagging()
     const [rows, fiedls] = await connection.instance.query(
-      queryString.getListNameFile()
+      queryString.getListNameFile(process.env.EXTRACT_START)
     );
     try {
       await connection.instance.beginTransaction();

@@ -77,8 +77,8 @@ exports.deleteRecords = deleteRecords;
 const updateStatusSrapinglog = (newStatus, file_name) =>
   `update ${process.env.DATABASE1}.scraping_log set status='${newStatus}' where file_name = '${file_name}'`;
 exports.updateStatusSrapinglog = updateStatusSrapinglog;
-const getListNameFile = () =>
-  `select file_name from ${process.env.DATABASE1}.scraping_log where status = '${process.env.EXTRACT_START}'`;
+const getListNameFile = (mode) =>
+  `select file_name from ${process.env.DATABASE1}.scraping_log where status = '${mode}'`;
 exports.getListNameFile = getListNameFile;
 const getListTablesTrancate = `SELECT
 concat('Truncate table ',TABLE_NAME, ";") as command
@@ -125,16 +125,15 @@ const enableForeigKeysCheck = () => {
 exports.enableForeigKeysCheck = enableForeigKeysCheck;
 //truncate all tables in stagging database
 const truncates = `
-truncate snapshot_result;   
-truncate date_dim;
-truncate time_dim;
-truncate league_dim;
-truncate venue_dim;
-truncate team_dim;
-truncate round_dim;
-truncate reference_dim;
-truncate status_dim;
-SET FOREIGN_KEY_CHECKS = 1; 
+truncate ${process.env.DATABASE2}.${process.env.SNS};   
+truncate ${process.env.DATABASE2}.${process.env.DD};
+truncate ${process.env.DATABASE2}.${process.env.TD};
+truncate ${process.env.DATABASE2}.${process.env.LD};
+truncate ${process.env.DATABASE2}.${process.env.VD};
+truncate ${process.env.DATABASE2}.${process.env.TED};
+truncate ${process.env.DATABASE2}.${process.env.RD};
+truncate ${process.env.DATABASE2}.${process.env.RED};
+truncate ${process.env.DATABASE2}.${process.env.SD};
 `;
 exports.truncates = truncates;
 //const get last index dim table
@@ -204,5 +203,5 @@ const insertFactResultTable = (
   id_status
 ) =>
   `insert into ${process.env.DATABASE2}.${process.env.RF} (id_match, id_league, id_date_start, id_time_start, id_home_team, id_away_team, id_reference, id_venue, id_round, id_status)
-  values ("${id_match}", ${id_league}, ${id_date_start}, ${id_time_start}, ${id_home_team}, ${id_away_team}, ${id_reference}, ${id_venue}, ${id_round}, ${id_status})`;
+  values ('${id_match}', ${id_league}, ${id_date_start}, ${id_time_start}, ${id_home_team}, ${id_away_team}, ${id_reference}, ${id_venue}, ${id_round}, ${id_status})`;
 exports.insertFactResultTable = insertFactResultTable;

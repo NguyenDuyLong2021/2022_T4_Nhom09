@@ -7,7 +7,7 @@ const fs = require("fs");
 const loadToStagging = async () => {
   //delete all record in stagging
   await connection.instance
-    .execute(stringQuery.getListNameFile())
+    .execute(stringQuery.getListNameFile(process.env.EXTRACT_START))
     .then(([rows, fiels]) =>
      rows.forEach(async(item) => {
      await connection.instance.execute(stringQuery.loadRecordToStagging(item.file_name))

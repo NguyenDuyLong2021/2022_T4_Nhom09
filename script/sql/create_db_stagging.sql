@@ -81,16 +81,18 @@ CREATE TABLE result_football (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     id_match VARCHAR(25) not null,
     id_league INTEGER NOT NULL,
-    id_date_start INTEGER default null,
-    id_time_start integer default null,
+    id_date_start INTEGER NOT NULL,
+    id_time_start integer NOT NULL,
+    goal_home_team INTEGER default 0,
+    goal_away_team INTEGER default 0,
     id_home_team integer not null,
     id_away_team integer not null,
     id_reference integer not null,
-    id_venue integer default null,
-    id_round integer default null,
-    id_status integer default null
+    id_venue integer NOT NULL,
+    id_round integer NOT NULL,
+    id_status integer NOT NULL
 );
-/* add foreign key*/
+/* add foreign key(no use)*/ 
 alter table result_football add foreign key (id_reference) references reference_dim(id);
 alter table result_football add foreign key (id_league) references league_dim(id);
 alter table result_football add foreign key (id_date_start) references date_dim(id);
