@@ -76,7 +76,7 @@ function App() {
           </Table>
         </Col>
         <Col>
-          <Table  bordered hover>
+          <Table  bordered>
             <tbody>
               <tr>
                 <td>Name team</td>
