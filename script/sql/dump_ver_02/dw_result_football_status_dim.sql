@@ -26,7 +26,7 @@ CREATE TABLE `status_dim` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name_status` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +35,7 @@ CREATE TABLE `status_dim` (
 
 LOCK TABLES `status_dim` WRITE;
 /*!40000 ALTER TABLE `status_dim` DISABLE KEYS */;
-INSERT INTO `status_dim` VALUES (1,'Finished\r');
+INSERT INTO `status_dim` VALUES (1,'Finished\r'),(2,'Finished\r');
 /*!40000 ALTER TABLE `status_dim` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-26 17:31:12
+-- Dump completed on 2022-11-30 16:21:37
