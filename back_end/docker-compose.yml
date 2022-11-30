@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345
+      - MYSQL_DATABASE=dw_dev
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=12345
+    ports:
+      - 3306:3306
+    volumes:
+      - dev-db:/var/lib/mysql
+    networks:
+      - dwAPI
+volumes:
+  dev-db:
+networks:
+  dwAPI:
