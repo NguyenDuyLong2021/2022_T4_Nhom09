@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model date_dim {
+  id                                                          Int               @id @default(autoincrement())
+  day                                                         Int
+  month                                                       Int
+  year                                                        Int
+  result_football_result_football_id_date_availableTodate_dim result_football[] @relation("result_football_id_date_availableTodate_dim")
+  result_football_result_football_id_date_startTodate_dim     result_football[] @relation("result_football_id_date_startTodate_dim")
+}
+
+model league_dim {
+  id                Int               @id @default(autoincrement())
+  name_league       String            @db.VarChar(100)
+  code              String?           @db.VarChar(50)
+  year_first_league Int?
+  result_football   result_football[]
+}
+
+model reference_dim {
+  id              Int               @id @default(autoincrement())
+  name_reference  String?           @db.VarChar(50)
+  nation          String?           @db.VarChar(50)
+  result_football result_football[]
+}
+
+model result_football {
+  id                                                   Int           @id @default(autoincrement())
+  id_match                                             String        @db.VarChar(25)
+  id_league                                            Int
+  id_date_start                                        Int
+  id_time_start                                        Int
+  goal_home_team                                       Int?          @default(0)
+  goal_away_team                                       Int?          @default(0)
+  id_home_team                                         Int
+  id_away_team                                         Int
+  id_reference                                         Int
+  id_venue                                             Int
+  id_round                                             Int
+  id_status                                            Int
+  id_time_available                                    Int?          @default(20)
+  id_date_available                                    Int?          @default(3412)
+  isDelete                                             Boolean?      @default(false)
+  league_dim                                           league_dim    @relation(fields: [id_league], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_1")
+  date_dim_result_football_id_date_availableTodate_dim date_dim?     @relation("result_football_id_date_availableTodate_dim", fields: [id_date_available], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_10")
+  status_dim                                           status_dim    @relation(fields: [id_status], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_11")
+  date_dim_result_football_id_date_startTodate_dim     date_dim      @relation("result_football_id_date_startTodate_dim", fields: [id_date_start], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_2")
+  time_dim_result_football_id_time_startTotime_dim     time_dim      @relation("result_football_id_time_startTotime_dim", fields: [id_time_start], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_3")
+  team_dim_result_football_id_home_teamToteam_dim      team_dim      @relation("result_football_id_home_teamToteam_dim", fields: [id_home_team], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_4")
+  team_dim_result_football_id_away_teamToteam_dim      team_dim      @relation("result_football_id_away_teamToteam_dim", fields: [id_away_team], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_5")
+  reference_dim                                        reference_dim @relation(fields: [id_reference], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_6")
+  venue_dim                                            venue_dim     @relation(fields: [id_venue], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_7")
+  round_dim                                            round_dim     @relation(fields: [id_round], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_8")
+  time_dim_result_football_id_time_availableTotime_dim time_dim?     @relation("result_football_id_time_availableTotime_dim", fields: [id_time_available], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "result_football_ibfk_9")
+
+  @@index([id_away_team], map: "id_away_team")
+  @@index([id_date_start], map: "id_date_start")
+  @@index([id_home_team], map: "id_home_team")
+  @@index([id_league], map: "id_league")
+  @@index([id_reference], map: "id_reference")
+  @@index([id_round], map: "id_round")
+  @@index([id_status], map: "id_status")
+  @@index([id_time_start], map: "id_time_start")
+  @@index([id_venue], map: "id_venue")
+  @@index([id_date_available], map: "result_football_ibfk_10")
+  @@index([id_time_available], map: "result_football_ibfk_9")
+}
+
+model round_dim {
+  id              Int               @id @default(autoincrement())
+  name_round      String?           @db.VarChar(25)
+  result_football result_football[]
+}
+
+model status_dim {
+  id              Int               @id @default(autoincrement())
+  name_status     String?           @db.VarChar(25)
+  result_football result_football[]
+}
+
+model team_dim {
+  id                                                     Int               @id @default(autoincrement())
+  name_team                                              String            @db.VarChar(100)
+  code_team                                              String?           @db.VarChar(50)
+  result_football_result_football_id_home_teamToteam_dim result_football[] @relation("result_football_id_home_teamToteam_dim")
+  result_football_result_football_id_away_teamToteam_dim result_football[] @relation("result_football_id_away_teamToteam_dim")
+}
+
+model time_dim {
+  id                                                          Int               @id @default(autoincrement())
+  hour                                                        Int
+  miniute                                                     Int
+  second                                                      Int
+  result_football_result_football_id_time_startTotime_dim     result_football[] @relation("result_football_id_time_startTotime_dim")
+  result_football_result_football_id_time_availableTotime_dim result_football[] @relation("result_football_id_time_availableTotime_dim")
+}
+
+model venue_dim {
+  id              Int               @id @default(autoincrement())
+  name_venue      String            @db.VarChar(100)
+  attendance      String            @db.VarChar(10)
+  result_football result_football[]
+}
