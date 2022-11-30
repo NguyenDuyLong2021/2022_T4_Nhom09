@@ -10,6 +10,8 @@ import Table from 'react-bootstrap/Table'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { CSVLink, CSVDownload } from 'react-csv'
+import { jsPDF } from 'jspdf'
+import html2canvas from 'html2canvas'
 import { useEffect, useState } from 'react'
 
 function App() {
@@ -26,6 +28,18 @@ function App() {
 		{ label: 'Home Win Rate', key: 'home_win_rate' },
 		{ label: 'Away Win Rate', key: 'away_win_rate' },
 	]
+
+	const exportPDF = () => {
+		const pdf = new jsPDF('landscape', 'cm', 'a4')
+		html2canvas(document.body).then(canvas => {
+			const imgData = canvas.toDataURL('image/png')
+			const imgProperties = pdf.getImageProperties(imgData)
+			const pdfWidth = pdf.internal.pageSize.getWidth()
+			const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width
+			pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+			pdf.save('report.pdf')
+		})
+	}
 
 	const onChangeA = e => {
 		setSelectedA(e.target.value)
@@ -140,91 +154,96 @@ function App() {
 					</Form.Select>
 				</Col>
 			</Row>
-			<Row style={{ marginTop: '10px' }}>
-				<Col>
-					{' '}
-					<Table bordered>
-						<tbody>
-							<tr>
-								<td>{report?.teamA?.name ? report.teamA.name : 'Name Team A'}</td>
-							</tr>
-							<tr>
-								<td>{report?.teamA?.venue ? report.teamA.venue : 'Venue'}</td>
-							</tr>
-							<tr>
-								<td>
-									{report?.teamA?.homeWinRate
-										? report.teamA.homeWinRate
-										: 'Home Win Rate'}
-								</td>
-							</tr>
-							<tr>
-								<td>
-									{report?.teamA?.awayWinRate
-										? report.teamA.awayWinRate
-										: 'Away Win Rate'}
-								</td>
-							</tr>
-						</tbody>
-					</Table>
-				</Col>
-				<Col>
-					<Table bordered>
-						<tbody>
-							<tr>
-								<td>Name team</td>
-							</tr>
-							<tr>
-								<td>Venue</td>
-							</tr>
-							<tr>
-								<td>Home win rate</td>
-							</tr>
-							<tr>
-								<td>Away win rate</td>
-							</tr>
-							<tr>
-								<td>Goal scoreds</td>
-							</tr>
-							<tr>
-								<td>Number of win</td>
-							</tr>
-							<tr>
-								<td>Number of lose</td>
-							</tr>
-						</tbody>
-					</Table>
-				</Col>
-				<Col>
-					<Table bordered>
-						<tbody>
-							<tr>
-								<td>{report?.teamB?.name ? report.teamB.name : 'Name Team B'}</td>
-							</tr>
-							<tr>
-								<td>{report?.teamB?.venue ? report.teamB.venue : 'Venue'}</td>
-							</tr>
-							<tr>
-								<td>
-									{report?.teamB?.homeWinRate
-										? report.teamB.homeWinRate
-										: 'Home Win Rate'}
-								</td>
-							</tr>
-							<tr>
-								<td>
-									{report?.teamB?.awayWinRate
-										? report.teamB.awayWinRate
-										: 'Away Win Rate'}
-								</td>
-							</tr>
-						</tbody>
-					</Table>
-				</Col>
-			</Row>
+			<div id='report'>
+				<Row style={{ marginTop: '10px' }}>
+					<Col>
+						{' '}
+						<Table id='report' bordered>
+							<tbody>
+								<tr>
+									<td>{report?.teamA?.name ? report.teamA.name : 'Name Team A'}</td>
+								</tr>
+								<tr>
+									<td>{report?.teamA?.venue ? report.teamA.venue : 'Venue'}</td>
+								</tr>
+								<tr>
+									<td>
+										{report?.teamA?.homeWinRate
+											? report.teamA.homeWinRate
+											: 'Home Win Rate'}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{report?.teamA?.awayWinRate
+											? report.teamA.awayWinRate
+											: 'Away Win Rate'}
+									</td>
+								</tr>
+							</tbody>
+						</Table>
+					</Col>
+					<Col>
+						<Table bordered>
+							<tbody>
+								<tr>
+									<td>Name team</td>
+								</tr>
+								<tr>
+									<td>Venue</td>
+								</tr>
+								<tr>
+									<td>Home win rate</td>
+								</tr>
+								<tr>
+									<td>Away win rate</td>
+								</tr>
+								<tr>
+									<td>Goal scoreds</td>
+								</tr>
+								<tr>
+									<td>Number of win</td>
+								</tr>
+								<tr>
+									<td>Number of lose</td>
+								</tr>
+							</tbody>
+						</Table>
+					</Col>
+					<Col>
+						<Table bordered>
+							<tbody>
+								<tr>
+									<td>{report?.teamB?.name ? report.teamB.name : 'Name Team B'}</td>
+								</tr>
+								<tr>
+									<td>{report?.teamB?.venue ? report.teamB.venue : 'Venue'}</td>
+								</tr>
+								<tr>
+									<td>
+										{report?.teamB?.homeWinRate
+											? report.teamB.homeWinRate
+											: 'Home Win Rate'}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										{report?.teamB?.awayWinRate
+											? report.teamB.awayWinRate
+											: 'Away Win Rate'}
+									</td>
+								</tr>
+							</tbody>
+						</Table>
+					</Col>
+				</Row>
+			</div>
 			<CSVLink className='export' data={exportData} headers={headers}>
 				Export To CSV
 			</CSVLink>
+			<button class='export' onClick={exportPDF}>
+				Export PDF
+			</button>
 		</Container>
 	)
 }
